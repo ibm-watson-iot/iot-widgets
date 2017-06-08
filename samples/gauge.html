@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <link href="../lib/c3/c3.min.css" rel="stylesheet" type="text/css">
+    <script src="/lib/d3/d3.min.js" charset="utf-8"></script>
+    <script src="../lib/c3/c3.min.js"></script>
+    
+    <script src="../wiotpwidgets.min.js"></script>
+
+  </head>
+  <body>
+    <h3>dial gauge</h3>
+    <div id="g1" style="width: 100%;float:left"></div>
+    <h3>default gauge</h3>
+    <div id="g2" style="width: 100%;float:left"></div>
+    <script>
+      var deviceType = 'Thermostat'
+      var deviceId='667627D18749'
+      var eventName = "getAll"
+      var param ="ActualTemperature"
+      var params = ["ActualTemperature","DesiredTemperature"];
+
+      //dial gauge
+      WIoTPWidget.CreateGauge("g1",eventName,deviceType,deviceId,param,{
+             label: {
+                 format: function(value, ratio) {
+                     return value;
+                 },
+                 show: true // to turn off the min/max labels.
+             },
+          min: -10, // 0 is default, //can handle negative min e.g. vacuum / voltage / current flow / rate of change
+          max: 50, // 100 is default
+          units: 'C'//,
+        },['#FF0000', '#F97600', '#F6C600', '#60B044'])
+
+      //default dial gauge
+      WIoTPWidget.CreateGauge("g2",eventName,deviceType,deviceId,param);
+
+
+
+    </script>
+  </body>
+</html>

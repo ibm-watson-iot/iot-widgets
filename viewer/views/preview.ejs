@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Ui Preview</title>
+    <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css" >
+    <link href="lib/c3/c3.min.css" rel="stylesheet" type="text/css">
+    <link href="lib/d3-floorplan/d3.floorplan.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <%- template %>
+    <div id="template"></div>
+    <script src="lib/d3/d3.min.js" charset="utf-8"></script>
+    <script src="lib/ol2-bower/OpenLayers.js"></script>
+    <script src="lib/jquery/dist/jquery.min.js"></script>
+    <script src="lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="lib/d3-floorplan/d3.floorplan.min.js"></script>
+    <script src="lib/c3/c3.min.js"></script>
+    <script src="lib/js/iotf-client-bundle.min.js"></script>
+    <script src="wiotpwidgets.min.js"></script>
+    <script type="text/javascript">
+    $( document ).ready(function () {
+      setTimeout(function(){
+        WIoTPWidget.initWidgets(<%- JSON.stringify(data) %>)
+      },10);
+    })
+    </script>
+
+  </body>
+</html>

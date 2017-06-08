@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <link href="../lib/c3/c3.min.css" rel="stylesheet" type="text/css">
+    <script src="/lib/d3/d3.min.js" charset="utf-8"></script>
+    <script src="../lib/c3/c3.min.js"></script>
+    
+    <script src="../wiotpwidgets.min.js"></script>
+
+    <style>
+      table, th, td {
+          border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <label for="devicelist"> Device list :</label>
+    <select id="devicelist">
+
+    </select>
+    <div id="widgetContainer">
+      <h1>  ActualTemperature :<span id="custom" > </span></h1>
+    </div>
+    <script>
+    //Template to create a custome widget
+    var customWidget = (function customWidget(_super) {
+      __extends(customWidget, _super);
+
+      function customWidget(){
+        _super.call(this,WIoTPWidget.getGroupCollection());
+      };
+
+      customWidget.prototype.CreateWidget =function(id,deviceType,deviceId,eventType,dataPoint,config){ // also data need for your widget config
+        this.callback = this.UpdateHandler.bind(this);
+        var WIoTPConnector = WIoTPWidget.getConnector();
+        WIoTPConnector.subscribe(deviceType,deviceId,eventType, this.callback);
+
+        this.data = {config:config,dataPoint:dataPoint,value:0,deviceId:deviceId,deviceType:deviceType,eventName:eventType};
+        //init your widget here
+        this.element = document.getElementById(id);
+        this.element.innerHTML ="Loading..."
+
+      };
+
+      customWidget.prototype.UpdateHandler = function (deviceType, deviceId,format,payload){
+        var payload = JSON.parse(payload);
+        if(this.data.value != payload.d[this.data.dataPoint])
+        {
+            this.data.value = payload.d[this.data.dataPoint];
+            //update your widget with the new value
+            this.element.innerHTML = this.data.value
+
+        }
+      };
+      customWidget.prototype.UpdateDevice = function (deviceType,deviceId,eventType,dataPoint){
+        //to handle device changes
+        var WIoTPConnector = WIoTPWidget.getConnector();
+        WIoTPConnector.unSubscribe(this.data.deviceType,this.data.deviceId,this.data.eventName, this.callback);
+        WIoTPConnector.subscribe(deviceType,deviceId,eventType, this.callback);
+        this.data.deviceType = deviceType;
+        this.data.deviceId = deviceId;
+        this.data.eventName = eventType;
+        this.data.dataPoint =dataPoint;
+        //reset your widget as per the new deviece needs
+        this.element.innerHTML ="Loading..."
+        this.data.value = "Loading..."
+      };
+
+      return customWidget;
+    }
+    )(BaseWidget);
+
+        WIoTPWidget.getAllDevices(function(resObj){
+          var result = resObj.results;
+          //just taking the first values
+          var deviceType= result[0]["typeId"];
+          var deviceId = result[0]["deviceId"];
+          var select = d3.select("#devicelist")
+
+          select.selectAll('option').data(result).enter().append('option').text(function (d) {
+             return d["deviceId"];
+            }).attr("value", function(d) {
+              return d["deviceId"];
+              });
+          var eventName = "getAll"
+          var param ="ActualTemperature"
+          var customWidgetInstance =  new customWidget();
+          customWidgetInstance.CreateWidget("custom",deviceType,deviceId,eventName,param);
+          var selectionChange = function(){
+              customWidgetInstance.UpdateDevice(deviceType ,d3.select("#devicelist").property("value"),eventName,param);
+          }
+          select.on("change",selectionChange);
+
+        })
+    </script>
+  </body>
+</html>

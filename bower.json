@@ -1,0 +1,28 @@
+{
+  "name": "iot-widgets",
+  "authors": [ "Amit Mangalvedkar <amitmangalvedkar@in.ibm.com>",
+    "Hari hara prasad Viswanathan <harihvis@in.ibm.com>", "Jeffrey Dare <jeffdare@in.ibm.com>"
+  ],
+  "description": "widget dependencies",
+  "main": "",
+  "license": "EPL-1.0",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "3.3.7",
+    "jquery": "3.2.1",
+    "d3": "3.5.17",
+    "c3": "0.4.11",
+    "d3-floorplan": "https://github.com/dciarletta/d3-floorplan.git",
+    "mocha": "^3.4.2",
+    "chai": "^4.0.2",
+    "expect": "^0.3.1",
+    "ol2-bower": "^2.13.1"
+  }
+}

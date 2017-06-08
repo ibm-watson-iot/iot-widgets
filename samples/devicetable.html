@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <link href="../lib/c3/c3.min.css" rel="stylesheet" type="text/css">
+    <script src="/lib/d3/d3.min.js" charset="utf-8"></script>
+    <script src="../lib/c3/c3.min.js"></script>
+    
+    <script src="../wiotpwidgets.min.js"></script>
+
+    <style>
+      table, th, td {
+          border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+
+      <table id="devicelist"style="width:100%">
+        <tr>
+          <th>Device Type</th>
+          <th>Device Id</th>
+        </tr>
+      </table>
+
+      <script>
+        WIoTPWidget.getAllDevices(function(resObj){
+          var result = resObj.results;
+          var table = d3.select("#devicelist");
+          for (var i = 0; i < result.length; i++) {
+            var tr = table.append("tr");
+            tr.append("td").text(result[i]["typeId"])
+            tr.append("td").text(result[i]["deviceId"])
+          }
+        })
+      </script>
+  </body>
+</html>

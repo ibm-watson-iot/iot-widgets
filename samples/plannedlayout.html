@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Floor Plan </title>
+
+<link href="../lib/c3/c3.min.css" rel="stylesheet" type="text/css">
+<link href="../lib/d3-floorplan/d3.floorplan.css" rel="stylesheet" type="text/css">
+<script src="/lib/d3/d3.min.js" charset="utf-8"></script>
+<script src="../lib/d3-floorplan/d3.floorplan.min.js"></script>
+<script src="../lib/c3/c3.min.js"></script>
+
+<script src="../wiotpwidgets.min.js"></script>
+
+</head>
+<body>
+
+<h1>Smart Home Layout </h1>
+	<p>
+	This demo shows the following usage
+	<ol>
+		<li>Overall plan of the structure</li>
+		<li>Heat signature at various locations in the plant (in filled rectangular shapes)</li>
+		<li>Path followed by an intruder using mobile device (in blue dashed lines)</li>
+		<li>Geo-fencing of the structure (bordered by green circles)</li>
+	</ol>
+	</p>
+
+
+<p style="text-align: right">Layer Controls &darr;</p>
+<div id="demo"></div>
+
+
+<script id="demo-code" type="text/javascript">
+
+	var deviceType = 'Thermostat'
+	var deviceId='667627D18749'
+	var eventName = "getAll"
+	var param ="ActualTemperature"
+
+	var plainLayout =WIoTPWidget.createLayout('demo',640,480,'samplePlant.png')
+	plainLayout.addHeatmap({
+		"binSize": 3,
+		"units": "\u00B0C",
+		"map": [
+			{"value": 0, "points": [{"x":13.3,"y":4.6},
+									   {"x":18.3,"y":4.6},
+									   {"x":18.3,"y":15},
+									   {"x":13.3,"y":15},
+									   {"x":13.3,"y":4.6}
+									   ]}]
+		},deviceType,deviceId,eventName,param,[-10,0,10,23,30,50]);
+		plainLayout.addOverlays({
+			"polygons": [
+				{"id": "p1",  "points": [{"x":29.8,"y":4.6},
+									   {"x":34.8,"y":4.6},
+									   {"x":34.8,"y":15},
+									   {"x":29.8,"y":15},
+									   {"x":29.8,"y":4.6}
+									   ]}
+				]
+			});
+			plainLayout.addVectorField({
+				"binSize": 4,
+				"units": "ft/s",
+				"map": [
+					{"x": 2.8, "y": 3.2, "value": {"x": 4, "y": 4}},
+					{"x": 4.8, "y": 3.2, "value": {"x": -4, "y": 4}},
+					{"x": 39.8, "y": 3.2, "value": {"x": 4, "y": 4}},
+					{"x": 41.8, "y": 3.2, "value": {"x": -4, "y": 4}},
+					{"x": 2.8, "y": 28.2, "value": {"x": 4, "y": 4}},
+					{"x": 4.8, "y": 28.2, "value": {"x": -4, "y": 4}},
+					{"x": 39.8, "y": 28.2, "value": {"x": 4, "y": 4}},
+					{"x": 41.8, "y": 28.2, "value": {"x": -4, "y": 4}},
+					]
+				});
+		plainLayout.addPathPlot( [{
+			"id": "flt-1",
+			"classes": "planned",
+			"points": [{"x": 5, "y": 18.5},{"x": 24, "y": 18.5},{"x": 24, "y": 10.5},{"x": 19, "y": 10.5}]
+			}]);
+
+</script>
+
+</body>
+</html>

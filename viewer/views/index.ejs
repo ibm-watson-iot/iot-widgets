@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <!-- <link rel='stylesheet' href='/stylesheets/style.css' /> -->
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" >
+    <link href="/lib/c3/c3.min.css" rel="stylesheet" type="text/css">
+    <link href="/lib/d3-floorplan/d3.floorplan.css" rel="stylesheet" type="text/css">
+
+  </head>
+  <body>
+    <div class="container">
+        <h1><%= title %>
+          <a href="/doc" class="btn btn-info" style="float:right">Docs</a>
+           <a href="/test" class="btn btn-warning" style="float:right;margin-right:10px">Launch test</a>
+           <!-- <a href="/studio" class="btn btn-success" style="float:right;margin-right:10px">Studio</a> -->
+         </h1>
+        <p>Welcome to <%= title %> Samples</p>
+        <div class="row ">
+        <% for(var i=0; i<samples.length; i++) {%>
+          <div class="col-sm-3">
+            <div class="panel panel-primary">
+              <div class="panel-heading"><%= samples[i].split(".")[0].split("samples/")[1]%></div>
+              <div class="panel-body">
+                <a href= "<%= samples[i] %>" class="btn btn-primary "> open </a>
+                <button class="btn btn-primary launchsample"  data-location="<%=samples[i] %>"> show </button>
+              </div>
+            </div>
+          </div>
+        <% }%>
+        </div>
+    </div>
+    <div id="sample" class="modal">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button class="close" data-dismiss="modal"  type="button">×</button>
+            <h4 class="modal-title" id="sampletitle"></h4>
+          </div>
+          <div class="modal-body" >
+            <ul class="nav nav-tabs">
+              <li class="active">
+                <a aria-expanded="true" data-toggle="tab" href="#js-tab-pane1">Sample</a>
+              </li>
+              <li class="">
+                <a aria-expanded="false" data-toggle="tab" href="#js-tab-pane2">Code</a>
+              </li>
+            </ul>
+            <div class="tab-content">
+              <div class="tab-pane active" id="js-tab-pane1">
+                <div class="container" style="display:block;width:100%">
+                  <div id="samplecanvas" ></div>
+                </div>
+              </div>
+              <div class="tab-pane " id="js-tab-pane2">
+                <code id="samplecode" style="white-space: pre ; display: block; unicode-bidi: embed;overflow:auto;background-color: #fff;color: #00f;"></code>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-default" data-dismiss="modal" type="button">Close</button>
+        </div>
+        </div>
+      </div>
+    </div>
+    <script src="/lib/d3/d3.min.js" charset="utf-8"></script>
+    <script src="/lib/ol2-bower/OpenLayers.js"></script>
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
+    <script src="/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/lib/d3-floorplan/d3.floorplan.min.js"></script>
+    <script src="/lib/c3/c3.min.js"></script>
+    <script src="/lib/js/iotf-client-bundle.min.js"></script>
+    <script src="/wiotpwidgets.min.js"></script>
+    <script type="text/javascript">
+          $(".launchsample").on("click", function launchSample(evt){
+            $('.nav-tabs a[href="#js-tab-pane1"]').tab('show');
+              var loc = $(this).attr("data-location");
+              $("#sampletitle").text(loc.split('.')[0]);
+              $.ajax({
+                type: "GET",
+                url:location+"/"+loc,
+                success:function( data ) {
+                  $("#sample").modal('show');
+                  $("#samplecanvas").html(data);
+                  $("#samplecode").text(data);
+                  //alert(data)
+                  //    $( 'div.ajax-field' ).html( data );
+                  }
+              });
+            });
+            $("#sample").on("hidden.bs.modal", function () {
+              $("#samplecanvas").html("");
+              $("#samplecode").text("");
+
+            });
+    </script>
+
+  </body>
+</html>

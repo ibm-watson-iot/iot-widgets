@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <link href="../lib/c3/c3.min.css" rel="stylesheet" type="text/css">
+    <script src="/lib/d3/d3.min.js" charset="utf-8"></script>
+    <script src="../lib/c3/c3.min.js"></script>
+    
+    <script src="../wiotpwidgets.min.js"></script>
+
+  </head>
+  <body>
+    <label class="col-sm-2 control-label">Type :</label>
+    <select class="form-control" id="chartoption">
+     <option selected="line" value="line">line</option>
+     <option value="spline">spline</option>
+     <option value="bar">bar</option>
+     <option value="scatter">scatter</option>
+     <option value="area">area</option>
+     <option value="area-spline">area-spline</option>
+     <option value="step">step</option>
+     <option value="area-step">area-step</option>
+     <option value="pie">pie</option>
+     <option value="donut">donut</option>
+    </select>
+    <br/>
+    <div id="c1" style="width: 100%;float:left"></div>
+
+    <script>
+      var deviceType = 'Thermostat'
+      var deviceId='667627D18749'
+      var eventName = "getAll"
+      var param ="ActualTemperature"
+      var params = ["ActualTemperature","DesiredTemperature"];
+      var chart = WIoTPWidget.CreateChart("c1",eventName,deviceType,deviceId,params,[["area-spline","ActualTemperature"],["scatter","DesiredTemperature"]],['#2ca02c','#d62728']);
+      document.getElementById("chartoption").onchange = function(){
+        chart.c3.transform(document.getElementById("chartoption").value)
+      }
+    </script>
+  </body>
+</html>

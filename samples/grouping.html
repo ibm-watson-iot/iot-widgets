@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <link href="../lib/c3/c3.min.css" rel="stylesheet" type="text/css">
+    <script src="/lib/d3/d3.min.js" charset="utf-8"></script>
+    <script src="../lib/c3/c3.min.js"></script>
+    
+    <script src="../wiotpwidgets.min.js"></script>
+    <style>
+    table{
+      border: 1px solid black;
+    }
+    th{
+      border-bottom:  1px solid black;
+    }
+    th,td{
+      border-right: 1px solid black;
+    }
+    </style>
+  </head>
+  <body>
+    <label class="col-sm-2 control-label">Type :</label>
+    <select class="form-control" id="chartoption">
+     <option selected="line" value="line">line</option>
+     <option value="spline">spline</option>
+     <option value="bar">bar</option>
+     <option value="scatter">scatter</option>
+     <option value="area">area</option>
+     <option value="area-spline">area-spline</option>
+     <option value="step">step</option>
+     <option value="area-step">area-step</option>
+     <option value="pie">pie</option>
+     <option value="donut">donut</option>
+    </select>
+    <br/>
+    <label class="col-sm-2 control-label">device Id :</label>
+    <select class="form-control" id="deviceoption">
+     <option selected="667627D18749" value="667627D18749">667627D18749</option>
+     <option value="2E2DE269756F">2E2DE269756F</option>
+   </select>
+    <br/>
+    <br/>
+    <!-- <div style="width: 50%;float:left">
+      <h3></h3><br>
+      <div id="c1" style="width: 100%;float:left"></div>
+      <div id="g1" style="width: 100%;float:left"></div>
+    </div>
+    <div style="width: 50%;float:left">
+      <h3>Allways show value for device Id: 7FD2D2D76BB3</h3>
+      <div id="g2" style="width: 50%;float:left"></div>
+    </div > -->
+    <table style="width:98%">
+      <tr>
+        <th>Showing values for deviceId :<span id="groupId">667627D18749</span> </th>
+        <th>Allways show value for device Id: 667627D18749</th>
+      </tr>
+      <tr>
+        <td><div id="c1"></div></td>
+        <td ><div id="g2" ></div></td>
+      </tr>
+      <tr>
+        <td ><div id="g1"></div></td>
+        <td ></td>
+      </tr>
+    </table>
+
+    <script>
+      var deviceType = 'Thermostat'
+      var deviceId='667627D18749'
+      var eventName = "getAll"
+      var param ="ActualTemperature"
+      var params = ["ActualTemperature","DesiredTemperature"];
+
+      var chart = WIoTPWidget.CreateChart("c1",eventName,deviceType,deviceId,params);
+      document.getElementById("chartoption").onchange = function(){
+        chart.c3.transform(document.getElementById("chartoption").value)
+      }
+      chart.setGroup("one_group_of_devices");
+      var gauge = WIoTPWidget.CreateGauge("g1",eventName,deviceType,deviceId,param,{
+             label: {
+                 format: function(value, ratio) {
+                     return value;
+                 },
+                 show: true // to turn off the min/max labels.
+             },
+          min: -10, // 0 is default, //can handle negative min e.g. vacuum / voltage / current flow / rate of change
+          max: 50, // 100 is default
+          units: 'C'//,
+        },['#FF0000', '#F97600', '#F6C600', '#60B044'])
+      gauge.setGroup("one_group_of_devices");
+
+      document.getElementById("deviceoption").onchange = function(){
+        var deviceid=document.getElementById("deviceoption").value;
+        WIoTPWidget.groupUpdate("one_group_of_devices",deviceType,deviceid,eventName,params);
+        document.getElementById("groupId").innerHTML = deviceid;
+      }
+
+      var gauge = WIoTPWidget.CreateGauge("g2",eventName,deviceType,deviceId,param)
+    </script>
+  </body>
+</html>

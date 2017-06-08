@@ -1,0 +1,60 @@
+<html>
+  <head>
+
+    <link href="../lib/c3/c3.min.css" rel="stylesheet" type="text/css">
+    <script src="/lib/d3/d3.min.js" charset="utf-8"></script>
+    <script src="../lib/c3/c3.min.js"></script>
+    
+    <script src="/lib/ol2-bower/OpenLayers.js"></script>
+    <script src="../wiotpwidgets.min.js"></script>
+
+  </head>
+  <body>
+    <div style="width:50%;display:inline-block;">
+      <h1 > OpenStreet Maps </h1>
+      <div id="omapdiv" style="width:100%; margin:10px; height: 500px;"></div>
+
+    </div>
+    <div style="width:50%;display:inline-block;float:right;">
+      <h1 > Live data for device :<span id="deviceId"> </span></h1>
+      <div id="g1" style="width: 100%;"></div>
+
+    </div>
+    <script>
+
+      var oMap = WIoTPWidget.CreateOMap("omapdiv");
+
+
+      var lat =12.9523877;
+      var long = 77.6440218;
+      WIoTPWidget.getAllDevices(function(res){
+        var result = res.results;
+        for (var i = 0; i < result.length; i++) {
+          lat= lat + 0.001;
+          long= long + 0.001;
+          oMap.PlotMultipleDevices(result[i]["typeId"],result[i]["deviceId"],lat, long);
+        }
+        oMap.setGroup("one_group_of_devices");
+        oMap.onMarkerClick = function(deviceType,deviceId,marker){
+          document.getElementById("deviceId").innerHTML = deviceId;
+        }
+        var firstDevice = result[0];
+        var gauge = WIoTPWidget.CreateGauge("g1","getAll",firstDevice["typeId"],firstDevice["deviceId"],"ActualTemperature",{
+               label: {
+                   format: function(value, ratio) {
+                       return value;
+                   },
+                   show: true // to turn off the min/max labels.
+               },
+            min: -10, // 0 is default, //can handle negative min e.g. vacuum / voltage / current flow / rate of change
+            max: 50, // 100 is default
+            units: 'C'//,
+          },['#FF0000', '#F97600', '#F6C600', '#60B044'])
+        gauge.setGroup("one_group_of_devices");
+        document.getElementById("deviceId").innerHTML =firstDevice["deviceId"];
+      });
+
+
+    </script>
+  </body>
+</html>

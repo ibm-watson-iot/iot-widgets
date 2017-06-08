@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Widget Studio</title>
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" >
+    <link href="/lib/c3/c3.min.css" rel="stylesheet" type="text/css">
+    <link href="/lib/d3-floorplan/d3.floorplan.css" rel="stylesheet" type="text/css">
+  </head>
+  <style >
+    /*boostrap nav bar custom*/
+    .navbar-custom {
+      background-color: #337ab7;
+      border-color: #2c699d;
+      background-image: -webkit-gradient(linear, left 0%, left 100%, from(#4f93ce), to(#337ab7));
+      background-image: -webkit-linear-gradient(top, #4f93ce, 0%, #337ab7, 100%);
+      background-image: -moz-linear-gradient(top, #4f93ce 0%, #337ab7 100%);
+      background-image: linear-gradient(to bottom, #4f93ce 0%, #337ab7 100%);
+      background-repeat: repeat-x;
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff4f93ce', endColorstr='#ff337ab7', GradientType=0);
+    }
+    .navbar-custom .navbar-brand {
+      color: #ffffff;
+    }
+    .navbar-custom .navbar-brand:hover,
+    .navbar-custom .navbar-brand:focus {
+      color: #e6e6e6;
+      background-color: transparent;
+    }
+    .navbar-custom .navbar-text {
+      color: #ffffff;
+    }
+    .navbar-custom .navbar-nav > li:last-child > a {
+      border-right: 1px solid #2c699d;
+    }
+    .navbar-custom .navbar-nav > li > a {
+      color: #ffffff;
+      border-left: 1px solid #2c699d;
+    }
+    .navbar-custom .navbar-nav > li > a:hover,
+    .navbar-custom .navbar-nav > li > a:focus {
+      color: #ffffff;
+      background-color: transparent;
+    }
+    .navbar-custom .navbar-nav > .active > a,
+    .navbar-custom .navbar-nav > .active > a:hover,
+    .navbar-custom .navbar-nav > .active > a:focus {
+      color: #ffffff;
+      background-color: #2c699d;
+      background-image: -webkit-gradient(linear, left 0%, left 100%, from(#2c699d), to(#3783c5));
+      background-image: -webkit-linear-gradient(top, #2c699d, 0%, #3783c5, 100%);
+      background-image: -moz-linear-gradient(top, #2c699d 0%, #3783c5 100%);
+      background-image: linear-gradient(to bottom, #2c699d 0%, #3783c5 100%);
+      background-repeat: repeat-x;
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff2c699d', endColorstr='#ff3783c5', GradientType=0);
+    }
+    .navbar-custom .navbar-nav > .disabled > a,
+    .navbar-custom .navbar-nav > .disabled > a:hover,
+    .navbar-custom .navbar-nav > .disabled > a:focus {
+      color: #cccccc;
+      background-color: transparent;
+    }
+    .navbar-custom .navbar-toggle {
+      border-color: #dddddd;
+    }
+    .navbar-custom .navbar-toggle:hover,
+    .navbar-custom .navbar-toggle:focus {
+      background-color: #dddddd;
+    }
+    .navbar-custom .navbar-toggle .icon-bar {
+      background-color: #cccccc;
+    }
+    .navbar-custom .navbar-collapse,
+    .navbar-custom .navbar-form {
+      border-color: #2b679b;
+    }
+    .navbar-custom .navbar-nav > .dropdown > a:hover .caret,
+    .navbar-custom .navbar-nav > .dropdown > a:focus .caret {
+      border-top-color: #ffffff;
+      border-bottom-color: #ffffff;
+    }
+    .navbar-custom .navbar-nav > .open > a,
+    .navbar-custom .navbar-nav > .open > a:hover,
+    .navbar-custom .navbar-nav > .open > a:focus {
+      background-color: #2c699d;
+      color: #ffffff;
+    }
+    .navbar-custom .navbar-nav > .open > a .caret,
+    .navbar-custom .navbar-nav > .open > a:hover .caret,
+    .navbar-custom .navbar-nav > .open > a:focus .caret {
+      border-top-color: #ffffff;
+      border-bottom-color: #ffffff;
+    }
+    .navbar-custom .navbar-nav > .dropdown > a .caret {
+      border-top-color: #ffffff;
+      border-bottom-color: #ffffff;
+    }
+    @media (max-width: 767) {
+      .navbar-custom .navbar-nav .open .dropdown-menu > li > a {
+        color: #ffffff;
+      }
+      .navbar-custom .navbar-nav .open .dropdown-menu > li > a:hover,
+      .navbar-custom .navbar-nav .open .dropdown-menu > li > a:focus {
+        color: #ffffff;
+        background-color: transparent;
+      }
+      .navbar-custom .navbar-nav .open .dropdown-menu > .active > a,
+      .navbar-custom .navbar-nav .open .dropdown-menu > .active > a:hover,
+      .navbar-custom .navbar-nav .open .dropdown-menu > .active > a:focus {
+        color: #ffffff;
+        background-color: #2c699d;
+      }
+      .navbar-custom .navbar-nav .open .dropdown-menu > .disabled > a,
+      .navbar-custom .navbar-nav .open .dropdown-menu > .disabled > a:hover,
+      .navbar-custom .navbar-nav .open .dropdown-menu > .disabled > a:focus {
+        color: #cccccc;
+        background-color: transparent;
+      }
+    }
+    .navbar-custom .navbar-link {
+      color: #ffffff;
+    }
+    .navbar-custom .navbar-link:hover {
+      color: #ffffff;
+    }
+  </style>
+  <style >
+    body {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+    .full {
+      width:100%;
+      height: 100%;
+      background: #eee;
+      margin:0px;
+      display: block;
+      position: absolute;
+    }
+    .rowblock{
+      height: calc(100% - 52px);
+      margin: 0px;
+      padding:0px;
+    }
+    .wrapper{
+      /*background: #ccc*/
+
+    }
+    div[candrop] {
+      min-height: 400px;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      border: 1px solid rgba(0, 0, 0, 0.19);
+    }
+    div[ignore=childClass],div[ignore=childClassStyle]{
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+    .container-table {
+      display: table;
+    }
+    .vertical-center-row {
+        display: table-cell;
+        vertical-align: middle;
+    }
+    #loading {
+        animation: colorchange 5s; /* animation-name followed by duration in seconds*/
+           /* you could also use milliseconds (ms) or something like 2.5s */
+        -webkit-animation: colorchange 5s; /* Chrome and Safari */
+      }
+
+      @keyframes colorchange
+      {
+        0%   {background: blue;}
+        25%  {background: yellow;}
+        50%  {background: red;}
+        75%  {background: green;}
+        100% {background: blue;}
+      }
+
+      @-webkit-keyframes colorchange /* Safari and Chrome - necessary duplicate */
+      {
+        0%   {background: blue;}
+        25%  {background: yellow;}
+        50%  {background: red;}
+        75%  {background: green;}
+        100% {background: blue;}
+      }
+
+    select:invalid {
+        border-color: #ffdddd;
+        box-shadow: 0 0 10px #ffdddd;
+    }
+    input:invalid {
+      border-color: #ffdddd;
+      box-shadow: 0 0 10px #ffdddd;
+    }
+
+  </style>
+  <body>
+    <div id="loading"class="full container-table" style="z-index:10;">
+      <div class="row vertical-center-row">
+        <div class="text-center col-md-4 col-md-offset-4" >
+          <h1 style="margin:0px;color:white;margin-top: -60px;font-size: 60px;">Widget studio</h1>
+          <h6 style="margin:0px;color:white;">loading ...</h6>
+        </div>
+      </div>
+    </div>
+    <div class="full">
+      <nav class="navbar navbar-custom" style="margin:0px;border: 0px;border-radius: 0;">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand" >Widget Studio</a>
+          </div>
+          <button id  ="preview"class="btn btn-default navbar-btn" style="float:right" type="button" >preview</button>
+          <button id="save" class="btn btn-default navbar-btn" style="float:right;margin-right:5px" type="button">save</button>
+        </div>
+      </nav>
+      <div class="row rowblock">
+        <div class="col-md-2" style="padding:1px;height:100% ">
+          <div class="panel panel-primary" style="height:100%;overflow:auto;margin:0px;">
+            <div class="panel-heading">Elements</div>
+            <div class="panel-body" id="boostrapelements">
+              <div class="well well-sm" draggable="true" name="container">Container</div>
+              <div class="well well-sm" draggable="true" name="layout">Layout</div>
+              <div class="well well-sm" draggable="true" name="panels">Panels</div>
+            </div>
+            <div class="panel-heading">Widgets</div>
+            <div class="panel-body" id="widgetlist" ></div>
+          </div>
+        </div>
+        <div class="col-md-10" style="padding:1px;height:100%;"  >
+          <div class="panel panel-primary" style="height:100% ;overflow-y:auto;margin:0px; ">
+            <div class="panel-heading" style="height:42px">Canvas</div>
+            <div class="panel-body" id="canvas" style="height:calc(100% - 42px );padding:0px;overflow-y:auto" candrop="true"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="conf" class="modal">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button class="close" data-dismiss="modal"  type="button">×</button>
+            <h4 class="modal-title" id="conffor"></h4>
+          </div>
+          <div class="modal-body" >
+            <form class="form-horizontal" id="widgetconfadd">
+              <div id="widgetconf">
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-default" data-dismiss="modal" type="button">Close</button>
+                <button id="configupdate" class="btn btn-default" data-dismiss="modal" type="button">Update</button>
+                <input id="configadd" class="btn btn-default"  type="submit" value="Add">
+              </div>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div id="boostrapconfig" class="modal">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button class="close" data-dismiss="modal"  type="button">×</button>
+            <h4 class="modal-title" id="bconffor"></h4>
+          </div>
+          <div class="modal-body" >
+            <form class="form-horizontal" id="boostrapconf">
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-default" data-dismiss="modal" type="button">Close</button>
+            <!-- <button id="bconfigupdate" class="btn btn-default" data-dismiss="modal" type="button">Update</button> -->
+            <button id="bconfigadd" class="btn btn-default" data-dismiss="modal" type="button">Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="/lib/d3/d3.min.js" charset="utf-8"></script>
+    <script src="/lib/ol2-bower/OpenLayers.js"></script>
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
+    <script src="/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/lib/d3-floorplan/d3.floorplan.min.js"></script>
+    <script src="/lib/c3/c3.min.js"></script>
+    <script src="/lib/js/iotf-client-bundle.min.js"></script>
+    <script src="/wiotpwidgets.min.js"></script>
+    <script type="text/javascript">
+    window.onload = function () {
+      setTimeout(function () {
+        $("#loading").remove()
+      },2000)
+    }
+    //to be get from config
+    var deviceType = 'Thermostat'
+    var deviceId='667627D18749'
+    var eventName = "getAll"
+    var param ="ActualTemperature"
+    var params = ["ActualTemperature","DesiredTemperature"];
+
+    function makeid(){
+        var text = "";
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        for( var i=0; i < 16; i++ )
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+        return text;
+    }
+    function parseHtml(body,callback){
+      var element = body.clone();
+      element.find(".wrapper div[ignore]").each(function(){
+        var element = $(this)
+        var ignoreType = element.attr("ignore");
+          if(ignoreType.toLowerCase().match("remove"))
+          {
+            element.remove();
+          }
+          if(ignoreType.toLowerCase().match("child"))
+          {
+            element.empty();
+          }
+          if(ignoreType.toLowerCase().match("style"))
+          {
+            element.removeAttr("style");
+          }
+          if(ignoreType.toLowerCase().match("class"))
+          {
+            element.removeAttr("class");
+          }
+            element.removeAttr("ignore");
+      }).promise().done(function(){
+        callback(element.html())
+        console.log(element.html());
+      })
+    }
+
+    function moveHandler(element,dir){
+      var parent = element.parent();
+      if(dir == 1){
+        var sibbling = element.next();
+        element.insertAfter(sibbling)
+      }
+      if(dir == -1){
+        var sibbling =element.prev();
+        element.insertBefore(sibbling)
+      }
+      if(dir == 2){
+        var sibbling;
+        if($(element.parents(" div[candrop]")[0]).hasClass( "panel-body" ))
+         sibbling =$(element.parents(" div[candrop] >.wrapper")[0].parentElement).next().find("div[candrop]")[0]
+        else {
+          sibbling =$(element.parents(" div[candrop]")[0]).next()
+        }
+        element.appendTo(sibbling)
+      }
+      if(dir == -2){
+        var sibbling;
+        if($(element.parents(" div[candrop]")[0]).hasClass( "panel-body" ))
+         sibbling =$(element.parents(" div[candrop] >.wrapper")[0].parentElement).prev().find("div[candrop]")[0]
+        else {
+          sibbling =$(element.parents(" div[candrop]")[0]).prev()
+        }
+        element.appendTo(sibbling)
+      }
+    }
+    $( document ).ready(function () {
+      var deviceList ={}
+      var deviceTypeOption = [];
+      var evt;
+      var payload;
+      WIoTPWidget.getAllDevices(function(resObj){
+        var result = resObj.results;
+        for (var i = 0; i < result.length; i++) {
+          var deviceType = result[i]["typeId"]
+          var deviceId = result[i]["deviceId"]
+          if(!deviceList[deviceType]){
+            deviceTypeOption.push($('<option >').text(deviceType))
+            deviceList[deviceType] = {};
+            WIoTPWidget.getAllLastEvents(deviceType,deviceId,function(result){
+              //console.log(result);
+              for (var i = 0; i < result.length; i++) {
+                var type = deviceList[result[i].typeId]
+                for (var device in type) {
+                  if(!type[device].event)
+                    type[device].event =[];
+                  type[device].event.push({ "name" :result[i].eventId,"payload":result[i].payload})
+                }
+              }
+
+            })
+          }
+          deviceList[deviceType][deviceId]={};
+        }
+      })
+
+      //store
+      var obj = {};
+      //populate widgets
+      var widgetsSchema = WIoTPWidget.getSchema();
+      ///Init widget and other components
+      var list = $("#widgetlist")
+      for ( var type in widgetsSchema)  {
+        var thumble = $('<div  class="well well-sm"></div>');
+        thumble.html(type);
+        thumble.attr("draggable",true);
+        thumble.attr("name",type);
+        thumble.on("dragstart",function(ev){
+          var props ={};
+          props.type = ev.target.attributes["name"].value;
+          props.isWidget =true;
+          ev.originalEvent.dataTransfer.setData("props",JSON.stringify(props));
+          //console.log(ev.target.attributes["name"].value);
+        })
+        list.append(thumble)
+      }
+      var boostrapComponent = $("#boostrapelements .well").each(function(){
+        var element =$(this);
+        element.on("dragstart",function(ev){
+          var props ={};
+          props.type = ev.target.attributes["name"].value;
+          props.isWidget =false;
+          ev.originalEvent.dataTransfer.setData("props",JSON.stringify(props));
+        })
+      })
+
+      //canvas contoller
+      var droperdElement = null;
+      var canvas =$('#canvas');
+      canvas.on('drop dragdrop',function(ev){
+        droperdElement = $(ev.originalEvent.target)
+        if(!droperdElement.attr("candrop"))
+        droperdElement =$(droperdElement.parents("div[candrop]")[0]);
+        var props = JSON.parse(ev.originalEvent.dataTransfer.getData("props"));
+        if(props.isWidget){
+          var id = makeid();
+          showConf(true,id,props.type);
+        }else{
+          boostrapHandler(props.type,ev);
+        }
+      });
+      canvas.on('dragenter',function(event){event.preventDefault();})
+      canvas.on('dragover',function(event){ event.preventDefault();})
+
+      $("#conf").on("hidden.bs.modal", function () {
+        $("#widgetconf").html("");
+        $("#conffor").text("");
+        $("#configadd").hide();
+        $("#configupdate").hide();
+        if(!droperdElement.find("#"+obj.selectedId).length){
+          delete obj[obj.selectedId];
+          obj.selectedId =""
+        }
+      });
+
+      //module controler for widgets
+      function showConf(isNew,id,type) {
+          console.log(id+"/"+type+"/"+isNew);
+          obj.selectedId = id;
+          $("#conf").modal('show');
+          $("#conffor").text("Added Config for "+ type)
+          var config = widgetsSchema[type];
+          var widgetconf =$("#widgetconf");
+          if(!isNew){
+              config = obj[id].config
+              $("#configadd").hide();
+              $("#configupdate").show();
+          }else{
+            $("#configadd").show();
+            $("#configupdate").hide();
+            obj[id]={};
+            obj[id].type = type;
+            obj[id].config = JSON.parse(JSON.stringify(config));
+          }
+          var populateId =function(id ,type,ele){
+            var devices = deviceList[type];
+            if(devices){
+              var deviceIdOption = ele || $("#"+id+"deviceId")
+              var defaultSelect = false;
+              for (var key in devices) {
+                var opt = $('<option>').html(key)
+                if(!defaultSelect)
+                  opt[0].selected = "true";
+                deviceIdOption.append(opt)
+              }
+            }
+          }
+          for(var key in config)
+          {
+            var formGroup = $('<div class="form-group"></div>')
+            var label = $('<label class="col-sm-3 control-label" for="'+id+key+'"></label>')
+            label.append(key);
+            var inputCont = $('<div class="col-sm-9"></div>')
+            var input;
+            if(key =="deviceType"){
+              input = $('<select id="'+id+key+'" class="form-control" required>')
+              input.append(deviceTypeOption);
+              input.on("change",function(){
+                var selected = $(this).val();
+                populateId(id,selected)
+              })
+            } else if(key =="deviceId"){
+              input = $('<select id="'+id+key+'" class="form-control" required>');
+              populateId(id,$("#"+id+"deviceType").val(),input);
+              input.on("change",function(){
+                var devId = $(this).val();
+                var typeId =$("#"+id+"deviceType").val();
+                if(deviceList[typeId][devId].event && deviceList[typeId][devId].event.length){
+                  var select =  $('<select id="'+id+'eventName" class="form-control" required>');
+                  var events = deviceList[typeId][devId].event;
+                  for (var i = 0; i < events.length; i++) {
+                    var opt = $('<option>').html(events[i]["name"])
+                    if(i ==0 )
+                      opt[0].selected = "true";
+                    select.append(opt)
+                  }
+                  select.attr("key","eventName");
+                  $("#"+id+"eventName").replaceWith(select)
+                }
+              })
+            }
+            else{
+               input = $('<input class="form-control" type="text" id="'+id+key+'" required>');
+            }
+            input.attr("key",key);
+            input.val(config[key]);
+            inputCont.append(input);
+            formGroup.append([label,inputCont]);
+            widgetconf.append(formGroup);
+          }
+      }
+
+      function dataHandler() {
+        var widgetconf =$("#widgetconf");
+        var id = obj.selectedId;
+        var config = obj[id].config;
+        widgetconf.find("[key]").each(function() {
+            var element = $( this );
+            var key = element.attr("key");
+            config[key] = element.val();
+            if(key == "params"){
+              config[key] = config[key].split(',')
+            }
+          });
+      }
+
+      $("#configupdate").on("click",function(){
+        dataHandler();
+      });
+      $("#widgetconfadd").on("submit",function(evt){
+        evt.preventDefault();
+
+        dataHandler();
+        var id = obj.selectedId;
+        var wrapper = $('<div class="wrapper"></div>');
+        var buttongroup = $('<div class="btn-group btn-group-xs" ignore="remove"></div>');
+        var edit=$('<button class="btn btn-info" type="button">edit</button>');
+        var editHandler =function(){
+          showConf(false,id,obj[id].type);
+        }
+        edit.on("click",editHandler);
+        var remove=$('<button class="btn btn-danger" type="button">remove</button>');
+        var removeHandler =function(){
+          wrapper.remove();
+          delete obj[id];
+        }
+        remove.on("click",removeHandler);
+        //var move=$('<button class="btn btn-default" type="button">move</button>');
+        var move=$('<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button" aria-expanded="false">move<span class="caret"></span></button>');
+        var menulist =$('<ul class="dropdown-menu"><li><a href="#" dir=-1 >up</a></li><li><a href="#" dir=1>down</a></li><li><a href="#" dir=-2>left</a></li><li><a href="#" dir=2>right</a></li></ul>')
+        menulist.on("click",function(evt){
+          moveHandler(wrapper,$(evt.target).attr("dir"))
+        })
+        buttongroup.append([move,menulist,edit,remove]);
+        var div = $("<div id=" +id +" ></div>");
+        if(obj[id].type === "map"){
+          div.css("height","400px")
+          div.attr("ignore","childClass")
+        }else{
+          div.attr("ignore","childClassStyle")
+        }
+        wrapper.append([buttongroup,div]);
+        droperdElement.append(wrapper).promise().done(function(){
+          setTimeout(WIoTPWidget.initWidget,500,id,obj[id].type,obj[id].config)
+        });
+        //ToBe Removed
+        // obj[id].config.deviceType =deviceType;
+        // obj[id].config.deviceId =deviceId;
+        // obj[id].config.eventName =eventName;
+        // obj[id].config.param =param;
+        // obj[id].config.params =params;
+        $("#conf").modal('hide');
+      });
+
+      //boostrap controller
+      function boostrapHandler(type,ev){
+        var wrapper = $('<div class="wrapper"></div>');
+        var buttongroup = $('<div class="btn-group btn-group-xs" ignore="remove"></div>');
+        var edit=$('<button class="btn btn-info" type="button">edit</button>');
+        var editHandler =function(){
+
+        }
+        edit.on("click",editHandler);
+        var remove=$('<button class="btn btn-danger" type="button">remove</button>');
+        var removeHandler =function(){
+          wrapper.find("div[ignore]").each(function(){
+            var id = this.id;
+            delete obj[id];
+          }).promise().done(function(){
+            wrapper.remove();
+          })
+
+        }
+        remove.on("click",removeHandler);
+        //var move=$('<button class="btn btn-default" type="button">move</button>');
+        var move=$('<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button" aria-expanded="false">move<span class="caret"></span></button>');
+        var menulist =$('<ul class="dropdown-menu"><li><a href="#" dir=-1 >up</a></li><li><a href="#" dir=1>down</a></li></ul>')
+        menulist.on("click",function(evt){
+          moveHandler(wrapper,$(evt.target).attr("dir"))
+        })
+        buttongroup.append([move,menulist,remove]);
+        wrapper.append(buttongroup);
+        var form =$('#boostrapconf');
+        if(type !=="container"){
+          form.html("");
+          $("#boostrapconfig").modal('show');
+          $("#bconfigadd").show();
+          $("#bconffor").text("Added Config for "+ type);
+        }
+        switch (type) {
+          case "container":
+            var addElement = function(){
+              var div = $('<div class="container-fluid" style="min-height:300px;" ignore="style"></div>');//ignore="style"
+              div.attr("candrop",true);
+              wrapper.append(div);
+              droperdElement.append(wrapper);
+            }
+            //$("#bconfigadd").on("click",addElement)
+            addElement();
+            break;
+          case "layout":
+              var noOfCol = "4+4+4";
+              var formGroup = $('<div class="form-group"></div>')
+              var label = $('<label class="col-sm-3 control-label" for="layout type"> Layout structure:</label>')
+              var inputCont = $('<div class="col-sm-9"></div>')
+              var input = $('<input class="form-control" type="string"  placeholder="4+4+4" >');
+              input.val("4+4+4");
+              input.on("change",function(){
+                noOfCol = $(this).val();
+              })
+              inputCont.append(input);
+              formGroup.append([label,inputCont]);
+              form.append(formGroup);
+            var addElement = function(){
+              var row =$('<div class="row"></div>')
+              var arr = noOfCol.split("+")
+              for (var i = 0; i < arr.length; i++) {
+                var div = $('<div ></div>');//ignore="style"
+                div.addClass("col-md-"+arr[i])
+                div.attr("candrop",true);
+                row.append(div);
+               }
+              wrapper.append(row);
+              droperdElement.append(wrapper);
+              $("#bconfigadd").off();
+            }
+            $("#bconfigadd").on("click",addElement)
+            //var comp = '<div class="row" style="background:green;min-height:300px"><div class="col-md-4"></div><div class="col-md-4"></div><div class="col-md-4"></div></div>';
+
+          break;
+          case "panels":
+            var headingValue = "";
+            var style = "";
+            var formGroup = $('<div class="form-group"></div>')
+            var label = $('<label class="col-sm-3 control-label" > Plane Heading:</label>')
+            var inputCont = $('<div class="col-sm-9"></div>')
+            var input = $('<input class="form-control" type="string"  placeholder="" >');
+            input.val("");
+            input.on("change",function(){
+              headingValue = $(this).val();
+            })
+            inputCont.append(input);
+            var label2 = $('<label class="col-sm-3 control-label" > Selcet type:</label>')
+            var inputCont2 = $('<div class="col-sm-9"></div>')
+            var input2 = $('<select class="form-control"><option></option> <option>default</option><option>primary</option><option>success</option><option>info</option><option>warning</option><option>danger</option></select>');
+            input2.on("change",function(){
+              style = $(this).val();
+            })
+            inputCont2.append(input2);
+            formGroup.append([label,inputCont,label2,inputCont2]);
+            form.append(formGroup);
+            var addElement = function(){
+                var plane = $('<div class="panel "></div>')
+                if(style)
+                  plane.addClass("panel-"+style)
+                var heading=$('<div class="panel-heading"></div>')
+                heading.text(headingValue)
+                var body = $('<div class="panel-body"></div>');
+                body.attr("candrop",true);
+                plane.append([heading,body])
+                wrapper.append(plane);
+                droperdElement.append(wrapper);
+                $("#bconfigadd").off();
+            }
+            $("#bconfigadd").on("click",addElement)
+          break;
+        }
+      }
+      $("#boostrapconfig").on("hidden.bs.modal", function () {
+        $("#boostrapconf").html("");
+        $("#bconffor").text("");
+        $("#bconfigadd").off();
+        $("#bconfigadd").hide();
+        $("#bconfigupdate").hide();
+      });
+
+      //updateView
+      function updateView(cb){
+        parseHtml(canvas,function(template){
+          var clone = JSON.parse(JSON.stringify(obj))
+          delete clone["selectedId"]
+          $.ajax({
+              type: 'POST',
+              url: '/preview/data',
+              data: JSON.stringify ({template:template,data:clone}),
+              contentType: "application/json",
+              dataType: 'text'
+          }).done(function() {
+            if(cb)
+              cb();
+          }).fail(function(err) {
+              alert( "preview faild" );
+          })
+        })
+      }
+      //preview control
+      $("#preview").on("click",function(){
+      updateView(function(){window.open('/preview')});
+      });
+      //save
+      $("#save").on("click",function () {
+        updateView(function(){window.open('/preview/download')});
+      })
+    })
+    </script>
+  </body>
+</html>

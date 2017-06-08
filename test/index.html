@@ -1,0 +1,24 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Mocha Tests</title>
+  <link href="/lib/mocha/mocha.css" rel="stylesheet" />
+</head>
+<body>
+  <div id="mocha"></div>
+
+  <script src="/lib/jquery/dist/jquery.min.js"></script>
+  <script src="/lib/expect/index.js"></script>
+  <script src="/lib/mocha/mocha.js"></script>
+  <script src="/lib/chai/chai.js"></script>
+  <script src="../wiotpwidgets.min.js"></script>
+
+  <script>mocha.setup('bdd')</script>
+  <script src="lib_test.js"></script>
+  <script>
+    mocha.checkLeaks();
+    mocha.globals(['jQuery']);
+    mocha.run();
+  </script>
+</body>
+</html>

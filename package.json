@@ -1,0 +1,55 @@
+{
+  "name": "wiotpwidgets",
+  "version": "0.1.0",
+  "main": "index.js",
+  "license": "EPL-1.0",
+  "repository": {
+      "type": "git",
+      "url": "git+https://github.com/ibm-watson-iot/iot-widgets.git"
+  },
+  "contributors":
+      [
+        {
+        "name": "Jeffrey Dare",
+        "email": "jeffdare@in.ibm.com"
+        },
+        {
+        "name": "Hari hara prasad Viswanathan",
+        "email": "harihvis@in.ibm.com"
+        },
+        {
+        "name": "Amit M Mangalvedkar",
+        "email": "amitmangalvedkar@in.ibm.com"
+        }
+      ],
+  "scripts": {
+    "start": "node ./viewer/app.js",
+    "clean": "shx rm -rf dist && shx mkdir dist/",
+    "build:common": " bower install && shx cp -r samples/ dist/samples/",
+    "build:uglify": "uglifyjs ./src/lib.js ./src/widget/*.js --mangle -o ./dist/wiotpwidgets.min.js",
+    "build": "npm run clean && npm run build:common && npm run build:uglify && gitbook build",
+    "dev": "npm run build && npm run start ",
+    "postinstall":"shx rm -rf dist && bower install && uglifyjs ./src/lib.js ./src/widget/*.js --mangle -o ./dist/wiotpwidgets.min.js"
+  },
+  "dependencies": {
+    "config": "^1.25.1",
+    "express": "~4.14.1",
+    "ibmiotf": "^0.2.31",
+    "ws": "1.0.0",
+    "uglify-js": "^2.4.10",
+    "shx": "latest",
+    "bower":"latest"
+  },
+  "devDependencies": {
+    "body-parser": "~1.16.0",
+    "cookie-parser": "~1.4.3",
+    "morgan": "~1.7.0",
+    "debug": "~2.6.0",
+    "ejs": "~2.5.5",
+    "chai": "^3.2.0",
+    "mocha": "^2.2.5",
+    "archiver":"^1.3.0",
+    "gitbook-cli":"latest",
+    "serve-favicon": "~2.3.2"
+  }
+}
