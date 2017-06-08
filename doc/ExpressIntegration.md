@@ -15,7 +15,7 @@ var express = require("express");
 var bodyParser = require('body-parser');
 var logger = require('morgan');
 
-var IoTWidgets = require("iot-widgets");
+var IoTWidgets = require("wiotpwidgets");
 // Create an Express app
 var app = express();
 
