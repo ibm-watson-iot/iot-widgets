@@ -34,4 +34,4 @@ Widget Library written in HTML5 for developing web-based responsive IoT Applicat
 
 ## Documentation
 
-For more information, please go [here](./SUMMARY.MD)
+For more information, please go [here](./SUMMARY.md)
